@@ -54,42 +54,43 @@ def load_data():
     y_line_manual = (-lr.coef_[0] * x_line_manual - lr.intercept_) / lr.coef_[1]
     return df, lr, scaler,X
 
+
+def otherstuff(df, lr, scaler ,X):
+    # Предсказание вероятности дефолта
+    st.subheader("Предсказание вероятности дефолта")
+    ccavg_input = st.slider("Выберите значение кредитного рейтинга", float(df['CCAvg'].min()), float(df['CCAvg'].max()), float(df['CCAvg'].mean()))
+    income_input = st.slider("Выберите значение дохода", float(df['Income'].min()), float(df['Income'].max()), float(df['Income'].mean()))
+
+    scaled_input = scaler.transform([[ccavg_input, income_input]])
+    probability_default = lr.predict(scaled_input)[0]
+    st.write(f"Вероятность дефолта: {1-probability_default:.2%}")
+
+    # Визуализация линии решения
+    # Генерация точек для линии (для вашей модели)
+    x_line_lr = np.linspace(min(X[:, 0]), max(X[:, 0]), 100)
+
+    # Генерация точек для линии (для вашей ручной реализации)
+    y_line_manual = (-lr.coef_[0] * x_line_lr - lr.intercept_) / lr.coef_[1]
+
+    # Визуализация
+    fig=plt.figure(figsize=(10, 7))
+    plt.scatter(X[:, 0], X[:, 1], c=df[['Personal.Loan']].to_numpy(), cmap='viridis')
+
+    dot=scaler.transform([[ccavg_input, income_input]])
+
+    plt.scatter(dot[0, 0], dot[0, 1], c='red', marker='x', s=1000)
+
+    # Построение линии для вашей ручной реализации
+    plt.plot(x_line_lr, y_line_manual, color='red', linewidth=2, label='Decision Boundary (manual)')
+
+    # Добавление меток и легенды
+    plt.xlabel('CCAvg')
+    plt.ylabel('Income')
+    plt.title('Binary Classification with Decision Boundary')
+    plt.legend()
+    plt.show()
+
+
+    st.pyplot(fig)
 df, lr, scaler ,X= load_data()
-
-
-# Предсказание вероятности дефолта
-st.subheader("Предсказание вероятности дефолта")
-ccavg_input = st.slider("Выберите значение кредитного рейтинга", float(df['CCAvg'].min()), float(df['CCAvg'].max()), float(df['CCAvg'].mean()))
-income_input = st.slider("Выберите значение дохода", float(df['Income'].min()), float(df['Income'].max()), float(df['Income'].mean()))
-
-scaled_input = scaler.transform([[ccavg_input, income_input]])
-probability_default = lr.predict(scaled_input)[0]
-st.write(f"Вероятность дефолта: {1-probability_default:.2%}")
-
-# Визуализация линии решения
-# Генерация точек для линии (для вашей модели)
-x_line_lr = np.linspace(min(X[:, 0]), max(X[:, 0]), 100)
-
-# Генерация точек для линии (для вашей ручной реализации)
-y_line_manual = (-lr.coef_[0] * x_line_lr - lr.intercept_) / lr.coef_[1]
-
-# Визуализация
-fig=plt.figure(figsize=(10, 7))
-plt.scatter(X[:, 0], X[:, 1], c=df[['Personal.Loan']].to_numpy(), cmap='viridis')
-
-dot=scaler.transform([[ccavg_input, income_input]])
-
-plt.scatter(dot[0, 0], dot[0, 1], c='red', marker='x', s=1000)
-
-# Построение линии для вашей ручной реализации
-plt.plot(x_line_lr, y_line_manual, color='red', linewidth=2, label='Decision Boundary (manual)')
-
-# Добавление меток и легенды
-plt.xlabel('CCAvg')
-plt.ylabel('Income')
-plt.title('Binary Classification with Decision Boundary')
-plt.legend()
-plt.show()
-
-
-st.pyplot(fig)
+otherstuff(df, lr, scaler ,X)
