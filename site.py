@@ -1,4 +1,4 @@
-from networkx import dfs_edges
+
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
@@ -32,8 +32,9 @@ def load_data():
         X = scaler.fit_transform(df[['CCAvg', 'Income']])
         y=df[['Personal.Loan']].to_numpy()
         lr = LogReg(learning_rate=0.01, n_inputs=2)
-        lr.intercept_=0.029916065767719158
-        lr.coef_=[1.3178887 , 2.36463115]
+        lr.fit(X, y, epochs=1000)
+        #lr.intercept_=0.029916065767719158
+        #lr.coef_=[1.3178887 , 2.36463115]
         
 
     # Визуализация данных
@@ -41,6 +42,8 @@ def load_data():
     fig=plt.figure(figsize=(10, 7))
     sns.scatterplot(x='CCAvg', y='Income', hue='Personal.Loan', data=df)
     plt.legend(title='Возврат кредита', labels=['есть', 'дефолт'])
+    plt.xlabel('Кредитный рейтинг')
+    plt.ylabel('Доход')
 
     st.pyplot(fig)
 
