@@ -37,6 +37,8 @@ def load_data():
         #lr.coef_=[1.3178887 , 2.36463115]
         
 
+        
+
     # Визуализация данных
     st.subheader("Визуализация данных")
     fig=plt.figure(figsize=(10, 7))
@@ -84,6 +86,7 @@ def otherstuff(df, lr, scaler ,X):
     plt.plot(x_line_lr, y_line_manual, color='red', linewidth=2, label='Decision Boundary (manual)')
 
     # Добавление меток и легенды
+    
     plt.xlabel('CCAvg')
     plt.ylabel('Income')
     plt.title('Binary Classification with Decision Boundary')
